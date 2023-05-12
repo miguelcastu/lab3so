@@ -165,7 +165,7 @@ void *cconsumer(int *data_size)
         // If no data left - mutex shared buffer unlock
         if (*data_size < 1)
         {
-            pthread_mutex_unlock(&mutex);
+            pthread_mutex_unlock(&mutex_buffer);
             pthread_exit(0);
         }
         
@@ -185,6 +185,7 @@ void *cconsumer(int *data_size)
         }
 
         // Consumer data enqueue
+        
         struct element *consumer_data = queue_get(c_buffer);
 
         // If error with time format
@@ -380,7 +381,7 @@ int main (int argc, const char * argv[])
     for (int i = 0; consumers_number > i; i++)
     {   
         // Consumer threads creation
-        if (pthread_create(&consumers_threads[i], NULL, (void *)cconsumer, &operations_counter) < 0)
+        if (pthread_create(&consumers_threads[i], NULL, (void *)workers, NULL) < 0)
         {
             // If error when creating consumer threads
             perror("ERROR: creating consumers_threads");
